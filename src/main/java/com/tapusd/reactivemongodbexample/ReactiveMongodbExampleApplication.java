@@ -17,13 +17,13 @@ public class ReactiveMongodbExampleApplication {
         SpringApplication.run(ReactiveMongodbExampleApplication.class, args);
     }
 
-    @Bean
-    CommandLineRunner runner(EmployeeRepository employeeRepository) {
-        return args -> employeeRepository.deleteAll()
-                .subscribe(null, null, () -> Stream.of(new Employee(UUID.randomUUID().toString(), "John", 20000L),
-                        new Employee(UUID.randomUUID().toString(), "Don", 18000L),
-                        new Employee(UUID.randomUUID().toString(), "Ketty", 16000L))
-                        .forEach(employee -> employeeRepository.save(employee).subscribe(System.out::println)));
-    }
-
+//    @Bean
+//    CommandLineRunner runner(EmployeeRepository employeeRepository) {
+//        return args -> employeeRepository.deleteAll()
+//                .subscribe(null, null, () -> Stream.of(new Employee(UUID.randomUUID().toString(), "John", 20000L),
+//                        new Employee(UUID.randomUUID().toString(), "Don", 18000L),
+//                        new Employee(UUID.randomUUID().toString(), "Ketty", 16000L))
+//                        .forEach(employee -> employeeRepository.save(employee).subscribe(System.out::println)));
+//    }
+//
 }
