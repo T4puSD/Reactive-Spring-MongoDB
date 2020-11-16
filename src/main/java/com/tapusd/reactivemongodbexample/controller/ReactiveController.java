@@ -13,6 +13,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 @RestController
@@ -27,15 +28,22 @@ public class ReactiveController {
         this.employeeRepository = employeeRepository;
     }
 
-    @GetMapping("/all")
+    @GetMapping(value = "/all", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Employee> getAll() {
-        return employeeRepository.findAll();
+        return employeeRepository.findAll().delayElements(Duration.ofSeconds(5));
     }
 
     @GetMapping("/{id}")
     public Mono<Employee> getOne(@PathVariable String id) {
         return employeeRepository.findById(id);
     }
+
+    @PostMapping("/")
+    public Mono<Employee> saveEmployee(@RequestBody Employee employee) {
+        employee.setId(UUID.randomUUID().toString());
+        return employeeRepository.save(employee);
+    }
+
 
     @PutMapping("/{id}")
     public Mono<Employee> updateEmployee(@PathVariable String id, @RequestBody Employee employee) {
@@ -53,6 +61,6 @@ public class ReactiveController {
         return employeeRepository.findById(id)
                 .flatMapMany(
                         employee -> Flux.fromStream(Stream.generate(() -> new EmployeDTO(employee.getId(), employee.getName(), employee.getSalary(), LocalDateTime.now())))
-                ).delayElements(Duration.ofSeconds(5));
+                ).delayElements(Duration.ofSeconds(2));
     }
 }
